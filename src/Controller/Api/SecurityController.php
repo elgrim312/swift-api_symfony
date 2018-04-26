@@ -33,12 +33,16 @@ class SecurityController extends Controller
         if ($form->isValid()) {
             $user = $userRepository->findOneByEmail($login->getEmail());
 
+            if (is_null($user)) {
+                return new Response("User not found");
+            }
             $validPassword =$userPasswordEncoder->isPasswordValid($user, $login->getPassword());
             if (!$validPassword) {
                 return new Response("User not found", 200);
             }
 
-            dump($user);die;
+            $json = $serializer->serialize(["token" => $user->getApiKey()], 'json');
+            return new Response($json, 200);
         }
     }
 }
