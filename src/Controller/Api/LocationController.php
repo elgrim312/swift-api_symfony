@@ -2,6 +2,7 @@
 
 namespace App\Controller\Api;
 
+use App\Entity\Rapport;
 use App\Repository\EventRepository;
 use App\Service\CheckifUser;
 use Symfony\Component\HttpFoundation\Request;
@@ -24,6 +25,7 @@ class LocationController extends Controller
     {
         $token = $request->request->get("token");
         $user = $checkifUser->getUser($token);
+
 
         if ($user === false) {
             return new Response("User not found", 200);

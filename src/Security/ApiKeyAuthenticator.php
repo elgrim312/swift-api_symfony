@@ -29,7 +29,7 @@ class ApiKeyAuthenticator extends AbstractGuardAuthenticator
      */
     public function supports(Request $request)
     {
-        return $request->headers->has('X-AUTH-TOKEN');
+        return $request->request->has('token');
     }
 
     /**
@@ -41,7 +41,7 @@ class ApiKeyAuthenticator extends AbstractGuardAuthenticator
     public function getCredentials(Request $request)
     {
         return array(
-            'token' => $request->headers->get('X-AUTH-TOKEN'),
+            'token' => $request->request->get('token'),
         );
     }
 
@@ -94,7 +94,7 @@ class ApiKeyAuthenticator extends AbstractGuardAuthenticator
     {
         $data = array(
             // you might translate this message
-            'message' => 'Authentication Required'
+            'message' => 'Authentification Required'
         );
 
         return new JsonResponse($data, Response::HTTP_UNAUTHORIZED);

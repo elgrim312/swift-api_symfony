@@ -19,7 +19,7 @@ class Location
     private $id;
 
     /**
-     * @ORM\Column(type="float")
+     * @ORM\Column(type="integer", options={"unsigned"=true})
      */
     private $beacon;
 

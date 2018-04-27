@@ -3,6 +3,7 @@
 namespace App\Controller\Api;
 
 use App\Entity\Login;
+use App\Entity\User;
 use App\Form\LoginType;
 use App\Repository\UserRepository;
 use App\Service\CheckifUser;
@@ -31,25 +32,20 @@ class SecurityController extends Controller
      */
     public function loginAction(Request $request, UserRepository $userRepository, SerializerInterface $serializer, UserPasswordEncoderInterface $userPasswordEncoder)
     {
-        $data = $request->request->all();
-        $login = new Login();
-        $form = $this->createForm(LoginType::class, $login);
-        $form->submit($data);
+        $login = $serializer->deserialize($request->getContent(), Login::class, 'json');
 
-        if ($form->isValid()) {
-            $user = $userRepository->findOneByEmail($login->getEmail());
+        $user = $userRepository->findOneByEmail($login->getEmail());
 
-            if (is_null($user)) {
-                return new Response("User not found");
-            }
-            $validPassword =$userPasswordEncoder->isPasswordValid($user, $login->getPassword());
-            if (!$validPassword) {
-                return new Response("User not found", 200);
-            }
-
-            $json = $serializer->serialize(["token" => $user->getApiKey()], 'json');
-            return new Response($json, 200);
+        if (is_null($user)) {
+            return new Response("User not found");
         }
+        $validPassword = $userPasswordEncoder->isPasswordValid($user, $login->getPassword());
+        if (!$validPassword) {
+            return new Response("User not found", 200);
+        }
+
+        $json = $serializer->serialize(["token" => $user->getApiKey()], 'json');
+        return new Response($json, 200);
     }
 
     /**
@@ -62,8 +58,9 @@ class SecurityController extends Controller
      */
     public function refreshAction(Request $request, UserRepository $userRepository,  SerializerInterface $serializer, CheckifUser $checkifUser)
     {
-        $token = $request->request->get("token");
-        $user = $checkifUser->getUser($token);
+        $token = json_decode($request->getContent());
+
+        $user = $checkifUser->getUser($token->token);
         $em = $this->getDoctrine()->getManager();
 
         if ($user === false) {
@@ -71,7 +68,7 @@ class SecurityController extends Controller
         }
 
         $date = new \DateTime();
-        $user->setApiKey(uniqid().$date->getTimestamp());
+            $user->setApiKey(uniqid().$date->getTimestamp());
 
         $em->persist($user);
         $em->flush();

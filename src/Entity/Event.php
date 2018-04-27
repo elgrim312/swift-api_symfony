@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -31,6 +33,16 @@ class Event
      * @ORM\JoinColumn(nullable=false)
      */
     private $location;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Rapport", mappedBy="event")
+     */
+    private $rapports;
+
+    public function __construct()
+    {
+        $this->rapports = new ArrayCollection();
+    }
 
     public function getId()
     {
@@ -71,5 +83,41 @@ class Event
         $this->location = $location;
 
         return $this;
+    }
+
+    /**
+     * @return Collection|Rapport[]
+     */
+    public function getRapports(): Collection
+    {
+        return $this->rapports;
+    }
+
+    public function addRapport(Rapport $rapport): self
+    {
+        if (!$this->rapports->contains($rapport)) {
+            $this->rapports[] = $rapport;
+            $rapport->setEvent($this);
+        }
+
+        return $this;
+    }
+
+    public function removeRapport(Rapport $rapport): self
+    {
+        if ($this->rapports->contains($rapport)) {
+            $this->rapports->removeElement($rapport);
+            // set the owning side to null (unless already changed)
+            if ($rapport->getEvent() === $this) {
+                $rapport->setEvent(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function __toString()
+    {
+        return $this->getId();
     }
 }

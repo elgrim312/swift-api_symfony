@@ -19,6 +19,17 @@ class LocationRepository extends ServiceEntityRepository
         parent::__construct($registry, Location::class);
     }
 
+    public function checkQrcode(string $qrcode, int $beacon)
+    {
+
+        return $this->createQueryBuilder('l')
+            ->Where("l.beacon = :beacon")
+            ->andWhere("l.qrcode = :qrcode")
+            ->setParameter("beacon", $beacon)
+            ->setParameter("qrcode", $qrcode)
+            ->getQuery()->getResult();
+    }
+
 //    /**
 //     * @return Location[] Returns an array of Location objects
 //     */

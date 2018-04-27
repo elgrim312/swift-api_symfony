@@ -1,0 +1,23 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello!{% endblock %}
+
+{% block body %}
+    <img src="{{ qr_code_data_uri(qrcode_string, { writer: 'svg', size: 150 }) }}" alt="" id="qrcode">
+
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<script type="application/javascript">
+    setInterval(() => {
+
+        axios.post("{{ path('reload_qrcode') }}", {"id_qrcode" : "{{ qrcode_id }}"})
+            .then(function (response) {
+                console.log(response);
+            })
+            .catch(function (error) {
+                console.log(error);
+        });
+
+        window.location.reload()
+    }, 100000)
+</script>
+{% endblock %}

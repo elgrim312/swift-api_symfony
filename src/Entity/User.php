@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\UserInterface;
 
@@ -36,6 +38,16 @@ class User implements UserInterface
      * @ORM\Column(type="string", unique=true, length=40)
      */
     private $apiKey;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Rapport", mappedBy="user")
+     */
+    private $rapports;
+
+    public function __construct()
+    {
+        $this->rapports = new ArrayCollection();
+    }
 
     /**
      * @return mixed
@@ -165,5 +177,36 @@ class User implements UserInterface
     public function getUsername()
     {
         // TODO: Implement getUsername() method.
+    }
+
+    /**
+     * @return Collection|Rapport[]
+     */
+    public function getRapports(): Collection
+    {
+        return $this->rapports;
+    }
+
+    public function addRapport(Rapport $rapport): self
+    {
+        if (!$this->rapports->contains($rapport)) {
+            $this->rapports[] = $rapport;
+            $rapport->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeRapport(Rapport $rapport): self
+    {
+        if ($this->rapports->contains($rapport)) {
+            $this->rapports->removeElement($rapport);
+            // set the owning side to null (unless already changed)
+            if ($rapport->getUser() === $this) {
+                $rapport->setUser(null);
+            }
+        }
+
+        return $this;
     }
 }
