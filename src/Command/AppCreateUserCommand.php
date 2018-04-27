@@ -51,7 +51,8 @@ class AppCreateUserCommand extends Command
         $user = new User();
         $user->setName($name);
         $user->setEmail($email);
-        $user->setApiKey(uniqid());
+        $date = new \DateTime();
+        $user->setApiKey(uniqid().$date->getTimestamp());
 
         $plainpassword = $password;
         $encoded = $this->encoder->encodePassword($user, $plainpassword);

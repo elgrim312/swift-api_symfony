@@ -70,7 +70,8 @@ class SecurityController extends Controller
             return new Response("User not found", 200);
         }
 
-        $user->setApiKey(uniqid());
+        $date = new \DateTime();
+        $user->setApiKey(uniqid().$date->getTimestamp());
 
         $em->persist($user);
         $em->flush();
