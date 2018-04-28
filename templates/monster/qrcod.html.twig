@@ -1,9 +1,0 @@
-{% extends 'base.html.twig' %}
-
-{% block title %}Monster{% endblock %}
-
-{% block body %}
-    {% for monster in monsters %}
-        <img src="{{ qr_code_data_uri( monster.name , { writer: 'svg', size: 150 }) }}" alt="">
-    {% endfor %}
-{% endblock %}

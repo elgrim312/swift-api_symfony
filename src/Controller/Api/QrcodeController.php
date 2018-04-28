@@ -26,22 +26,33 @@ class QrcodeController extends Controller
      * @param LocationRepository $locationRepository
      * @param SerializerInterface $serializer
      * @param CheckifUser $checkifUser
+     * @param EventRepository $eventRepository
      * @return Response
      */
     public function QrcodeCheckAction(Request $request, LocationRepository $locationRepository, SerializerInterface $serializer, CheckifUser $checkifUser, EventRepository $eventRepository)
     {
         $datas =json_decode($request->getContent());
+
+        if (isset($datas->date) | isset($datas->QRCodeData) | isset($datas->beaconConllection)) {
+            $json = $serializer->serialize(["response" => "missing argument"], "json");
+            return new Response($json, 200);
+        }
+
+        $date = date('Y-m-d G:i:s', strtotime($datas->date));
+
+        $events = $eventRepository->checkEventIsActive($date);
+
+        if (isset($events) == false) {
+            $json = $serializer->serialize(["response" => "the time to validate the qrcode is passed"], "json");
+            return new Response($json, 200);
+        }
+
         $location = $locationRepository->checkQrcode($datas->QRCodeData, $datas->beaconCollection);
         $user = $checkifUser->getUser($datas->token);
         $em = $this->getDoctrine()->getManager();
 
         if (count($location) == 0 ) {
             $json = $serializer->serialize(["response" => "KO"], "json");
-            return new Response($json, 200);
-        }
-
-        if ($user === false) {
-            $json = $serializer->serialize(["response" => 'User not found'], 'json');
             return new Response($json, 200);
         }
 

@@ -7,6 +7,7 @@ use App\Entity\User;
 use App\Form\LoginType;
 use App\Repository\UserRepository;
 use App\Service\CheckifUser;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -34,14 +35,18 @@ class SecurityController extends Controller
     {
         $login = $serializer->deserialize($request->getContent(), Login::class, 'json');
 
+        if (is_null($login->getEmail()) | is_null($login->getPassword())) {
+            return new JsonResponse(["message" => "missing data"], 200);
+        }
+
         $user = $userRepository->findOneByEmail($login->getEmail());
 
         if (is_null($user)) {
-            return new Response("User not found");
+            return new JsonResponse(["message" => "invalid password or email"], 200);
         }
         $validPassword = $userPasswordEncoder->isPasswordValid($user, $login->getPassword());
         if (!$validPassword) {
-            return new Response("User not found", 200);
+            return new JsonResponse(["message" => "invalid password or email"], 200);
         }
 
         $json = $serializer->serialize(["token" => $user->getApiKey()], 'json');

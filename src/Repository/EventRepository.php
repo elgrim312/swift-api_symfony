@@ -5,6 +5,7 @@ namespace App\Repository;
 use App\Entity\Event;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Symfony\Bridge\Doctrine\RegistryInterface;
+use Symfony\Component\Validator\Constraints\Date;
 
 /**
  * @method Event|null find($id, $lockMode = null, $lockVersion = null)
@@ -43,6 +44,20 @@ class EventRepository extends ServiceEntityRepository
             ->setParameter("begin", $begin)
             ->setParameter("end", $end)
             ->getQuery()->execute();
+    }
+
+    public function checkEventIsActive(string $date)
+    {
+        $begin = new \DateTime($date. ' -5 minutes');
+        $end = new \DateTime($date. ' +5 minutes');
+
+        return $this->createQueryBuilder('e')
+            ->where("e.start_at >= :begin ")
+            ->andWhere("e.start_at <= :end")
+            ->setParameter("begin", $begin)
+            ->setParameter("end", $end)
+            ->getQuery()->execute()
+        ;
     }
 //    /**
 //     * @return Event[] Returns an array of Event objects

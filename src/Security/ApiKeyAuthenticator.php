@@ -29,7 +29,11 @@ class ApiKeyAuthenticator extends AbstractGuardAuthenticator
      */
     public function supports(Request $request)
     {
-        return $request->request->has('token');
+        $json = json_decode($request->getContent());
+        if (isset($json->token)) {
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -40,8 +44,9 @@ class ApiKeyAuthenticator extends AbstractGuardAuthenticator
      */
     public function getCredentials(Request $request)
     {
+        $json = json_decode($request->getContent());
         return array(
-            'token' => $request->request->get('token'),
+            'token' => $json->token,
         );
     }
 
@@ -90,7 +95,7 @@ class ApiKeyAuthenticator extends AbstractGuardAuthenticator
      * @param AuthenticationException|null $authException
      * @return JsonResponse
      */
-    public function start(Request $request, AuthenticationException $authException = null)
+    public function  start(Request $request, AuthenticationException $authException = null)
     {
         $data = array(
             // you might translate this message
