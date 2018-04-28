@@ -2,7 +2,7 @@
 
 ## Création des utilisateurs 
 
-Pour créer de nouveaux utilisateurs lancez la commande `php bin/console app:create-user` avec les arguments suivant et dans l'ordre :
+Pour créer de nouveaux **utilisateurs** lancez la commande `php bin/console app:create-user` avec les arguments suivant et dans l'ordre :
 
  1. myemail@mydomain.com
  2. Myname
@@ -10,7 +10,7 @@ Pour créer de nouveaux utilisateurs lancez la commande `php bin/console app:cre
 
 ## Création d'un event
 
-Pour créer de nouveaux utilisateurs lancez la commande `php bin/console app:create-event` avec les arguments suivant et dans l'ordre :
+Pour créer de nouveaux **events** lancez la commande `php bin/console app:create-event` avec les arguments suivant et dans l'ordre :
 
  1. `location ID`
  2. Event name
