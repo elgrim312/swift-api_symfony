@@ -34,7 +34,7 @@ class AppCreateUserCommand extends Command
     protected function configure()
     {
         $this
-            ->setDescription('Add a short description for your command')
+            ->setDescription('Create User')
             ->addArgument('email', InputArgument::REQUIRED, 'email of user')
             ->addArgument('name', InputArgument::REQUIRED, 'name of user')
             ->addArgument('password', InputArgument::REQUIRED, 'password of user')
@@ -61,6 +61,6 @@ class AppCreateUserCommand extends Command
         $this->em->persist($user);
         $this->em->flush();
 
-        $io->success('You have a new command! Now make it your own! Pass --help to see your options.');
+        $io->success('Congratulation new user is create');
     }
 }
