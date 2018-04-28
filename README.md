@@ -15,6 +15,10 @@ Pour créer de nouveaux utilisateurs lancez la commande `php bin/console app:cre
  1. `location ID`
  2. Event name
 
+## Connexion
+Pour toutes les url qui on comment préfix `/api` il vous faut ajouter un champ `token` avec la bonne valeur, vous pouvez récupérer ce token à l'url `/api/login` 
+
+
 ## GET /api/getLocation
 
 Pour récupérer un Event il vous faut interroger l'API dans les **5 minutes** avant ou après la date contenu dans le champ `StartAt`
