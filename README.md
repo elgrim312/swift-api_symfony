@@ -1,5 +1,7 @@
 # Système d'émargement
 
+## Api réaliser dans le cadre du cours symfony / swift en Web 3 P2018 Hétic
+
 ## Création des utilisateurs 
 
 Pour créer de nouveaux **utilisateurs** lancez la commande `php bin/console app:create-user` avec les arguments suivant et dans l'ordre :
